@@ -19,7 +19,7 @@
 #
 ############################################################
 
-package Parse::Colloquy::Bot
+package Parse::Colloquy::Bot;
 # vim:ts=4:sw=4:tw=78
 
 use strict;
@@ -161,41 +161,17 @@ Parse::Colloquy::Bot - Parse Colloquy Bot/Client Terminal Output
  
 =head1 DESCRIPTION
 
-RRD::Simple provides a simple interface to RRDTool's RRDs module.
-This module does not currently offer C<fetch> method that is
-available in the RRDs module.
+blah blah blah
 
-=head1 METHODS
+=head1 FUNCTIONS
 
-=head1 VARIABLES
+=head2 parse_input
 
-=head2 $RRD::Simple::DEBUG
-
-=head1 EXPORTS
-
-You can export the following functions if you do not wish to go through
-the extra effort of using the OO interface:
-
- create
- update
- last_update (synonym for the last() method)
- sources
- add_source
- graph
- retention_period
- info
-
-The tag C<all> is available to easily export everything:
-
- use RRD::Simple qw(:all);
-
-See the examples and unit tests in this distribution for more
-details.
+blah blah blah
 
 =head1 SEE ALSO
 
-L<RRDTool::OO>, L<RRDs>,
-L<http://www.rrdtool.org>, examples/*.pl
+L<Colloquy::Data>, L<Colloquy::Bot::Simple>, L<Chatbot::TalkerBot>
 
 =head1 VERSION
 
