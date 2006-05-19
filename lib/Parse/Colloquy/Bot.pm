@@ -64,8 +64,6 @@ sub _parse_line {
 			args    => [ split(/\s+/,$_||'') ],
 			command => undef,
 			cmdargs => undef,
-			#command => (split(/\s+/,$2||''))[0],
-			#cmdargs => [ (split(/\s+/,$2||''))[1,] ],
 			list    => undef,
 			person  => undef,
 			respond => undef,
@@ -73,12 +71,15 @@ sub _parse_line {
 	local $_ = $args{text};
 
 	if ($args{msgtype} =~ /^TALK|TELL$/ && /^(\S+)\s+[:>](.*)\s*$/) {
+		TRACE('TALK|TELL');
 		$args{person}  = $1;
 		$args{text}    = $2;
-		$args{cmdargs} = $args{args} = [ split(/\s+/,$args{text}) ];
+		$args{args}    = [ split(/\s+/,$args{text}) ];
+		$args{cmdargs} = [ @{$args{args}} ];
 		$args{command} = shift @{$args{cmdargs}};
 
 	} elsif ($args{msgtype} eq 'LISTINVITE' && /((\S+)\s+invites\s+you\s+to\s+(\S+)\s+To\s+respond,\s+type\s+(.+))\s*$/) {
+		TRACE('LISTINVITE');
 		$args{text}    = $1;
 		$args{person}  = $2;
 		$args{list}    = $3;
@@ -86,27 +87,33 @@ sub _parse_line {
 		$args{args}    = [ split(/\s+/,$args{text}) ];
 
 	} elsif ($args{msgtype} eq 'LISTTALK' && /^(\S+)\s*%(.*)\s+{(.+?)}\s*$/) {
+		TRACE('LISTTALK');
 		$args{person}  = $1;
 		$args{text}    = $2;
-		$args{cmdargs} = $args{args} = [ split(/\s+/,$args{text}) ];
+		$args{args}    = [ split(/\s+/,$args{text}) ];
+		$args{cmdargs} = [ @{$args{args}} ];
 		$args{command} = shift @{$args{cmdargs}};
 		$args{list}    = '%'.$3;
 
 	} elsif ($args{msgtype} eq 'LISTEMOTE' && /^%\s*(\S+)\s+(.*)\s+{(.+?)}\s*$/) {
+		TRACE('LISTEMOTE');
 		$args{person}  = $1;
 		$args{text}    = $2;
 		$args{args}    = [ split(/\s+/,$args{text}) ];
 		$args{list}    = '%'.$3;
 
 	} elsif ($args{msgtype} eq 'OBSERVED' && /^(\S+)\s+(\S+)\s+(\S+)\s+\@(.+)\s+{(\@.+?)}\s*$/) {
+		TRACE("OBSERVED $2 (a)");
 		$args{group}   = $args{list} = '@'.$1;
 		$args{msgtype} = "OBSERVED $2";
 		$args{person}  = $3;
 		$args{text}    = $4;
-		$args{cmdargs} = $args{args} = [ split(/\s+/,$args{text}) ];
+		$args{args}    = [ split(/\s+/,$args{text}) ];
+		$args{cmdargs} = [ @{$args{args}} ];
 		$args{command} = shift @{$args{cmdargs}};
 
 	} elsif ($args{msgtype} eq 'OBSERVED' && /^(\S+)\s+(\S+)\s+(?:\@\s+)(\S+)\s+(.+)\s+{(\@.+?)}\s*$/) {
+		TRACE("OBSERVED $2 (b)");
 		$args{group}   = $args{list} = '@'.$1;
 		$args{msgtype} = "OBSERVED $2";
 		$args{person}  = $3;
@@ -114,6 +121,7 @@ sub _parse_line {
 		$args{args}    = [ split(/\s+/,$args{text}) ];
 
 	} elsif ($args{msgtype} eq 'OBSERVED' && /^(\S+)\s+GROUPCHANGE\s+(\S+)\s+(.*)\s*$/) {
+		TRACE('OBSERVED GROUPCHANGE');
 		$args{group}   = $args{list} = '@'.$1;
 		$args{msgtype} = 'OBSERVED GROUPCHANGE';
 		$args{person}  = $2;
@@ -121,17 +129,20 @@ sub _parse_line {
 		$args{args}    = [ split(/\s+/,$args{text}) ];
 
 	} elsif ($args{msgtype} eq 'SHOUT' && /^(\S+)\s+\!(.*)\s*$/) {
+		TRACE('SHOUT');
 		$args{person}  = $1;
 		$args{text}    = $2;
 		$args{args}    = [ split(/\s+/,$args{text}) ];
 
 	} elsif ($args{msgtype} eq 'CONNECT' && /^((\S+).+\s+(\S+)\.)\s*$/) {
+		TRACE('CONNECT');
 		$args{text}    = $1;
 		$args{person}  = $2;
 		$args{group}   = $args{list} = '@'.$3;
 		$args{args}    = [ split(/\s+/,$args{text}) ];
 
 	} elsif ($args{msgtype} eq 'IDLE' && /^((\S+)(.*))\s*$/) {
+		TRACE('IDLE');
 		$args{text}    = $1;
 		$args{person}  = $2;
 		$args{args}    = [ split(/\s+/,$args{text}) ];
@@ -174,13 +185,47 @@ Parse::Colloquy::Bot - Parse Colloquy Bot/Client Terminal Output
  
 =head1 DESCRIPTION
 
-blah blah blah
+This module will parse the raw "client" or "bot" terminal line
+output from a connection to a Colloquy server. 
 
 =head1 FUNCTIONS
 
 =head2 parse_line
 
-blah blah blah
+Accepts a single scalar input line or an array of input. Will
+return a hash reference or array of hash references for each
+input line, depending on the context that the function called.
+
+=head1 EXAMPLE
+
+The following input line from Colloquy:
+
+ LISTTALK neech2      %hello my name is neech {perl}
+
+Will be parsed in to the following structure:
+
+ $VAR1 = {
+          'raw' => 'LISTTALK neech2      %hello my name is neech {perl}',
+          'msgtype' => 'LISTTALK',
+          'person' => 'neech2',
+          'list' => '%perl'
+          'text' => 'hello my name is neech',
+          'args' => [
+                      'hello',
+                      'my',
+                      'name',
+                      'is',
+                      'neech'
+                    ],
+          'command' => 'hello',
+          'cmdargs' => [
+                         'my',
+                         'name',
+                         'is',
+                         'neech'
+                       ],
+          'respond' => undef,
+        };
 
 =head1 SEE ALSO
 
@@ -198,7 +243,7 @@ L<http://perlgirl.org.uk>
 
 =head1 COPYRIGHT
 
-Copyright 2005,2006 Nicola Worthington.
+Copyright 2006 Nicola Worthington.
 
 This software is licensed under The Apache Software License, Version 2.0.
 

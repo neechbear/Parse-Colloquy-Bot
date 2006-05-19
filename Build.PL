@@ -17,7 +17,7 @@ $build = Module::Build->new(
 			'Carp'           => 0, # 1.04
 		},
 
-		build_requires => {
+		recommends => {
 			'Test'                => 0, # 1.25
 			'Test::More'          => 0, # 0.60
 			'Test::Pod'           => 0, # 1.20
