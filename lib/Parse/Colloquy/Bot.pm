@@ -24,7 +24,6 @@ package Parse::Colloquy::Bot;
 
 use strict;
 use Exporter;
-use RRDs;
 use Carp qw(croak cluck confess carp);
 
 use vars qw($VERSION $DEBUG @EXPORT @EXPORT_OK %EXPORT_TAGS @ISA);
@@ -38,7 +37,20 @@ $VERSION = '0.01' || sprintf('%d.%02d', q$Revision: 457 $ =~ /(\d+)/g);
 
 $DEBUG = $ENV{DEBUG} ? 1 : 0;
 
-sub parse_input {
+sub parse_line {
+	my @out = ();
+	for my $input (@_) {
+		push @out, _parse_line($input);
+	}
+	if (wantarray) {
+		return @out;
+	} else {
+		return $out[0] if @out == 1;
+		return \@out;
+	}
+}
+
+sub _parse_line {
 	local $_ = $_[0];
 	s/[\n\r]//g;
 	s/^\s+|\s+$//g;
@@ -125,6 +137,7 @@ sub parse_input {
 		$args{args}    = [ split(/\s+/,$args{text}) ];
 	}
 
+	DUMP('%args',\%args);
 	return \%args;
 }
 
@@ -156,7 +169,7 @@ Parse::Colloquy::Bot - Parse Colloquy Bot/Client Terminal Output
  use Data::Dumper;
  
  # ... connect to Colloquy and read from the server ...
- my $parsed = parse_input($raw_input);
+ my $parsed = parse_line($raw_input);
  print Dumper($parsed);  
  
 =head1 DESCRIPTION
@@ -165,7 +178,7 @@ blah blah blah
 
 =head1 FUNCTIONS
 
-=head2 parse_input
+=head2 parse_line
 
 blah blah blah
 
