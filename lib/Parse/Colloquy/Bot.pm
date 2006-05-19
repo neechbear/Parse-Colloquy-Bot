@@ -1,6 +1,6 @@
 ############################################################
 #
-#   $Id: Simple.pm 429 2006-05-01 21:10:56Z nicolaw $
+#   $Id$
 #   Parse::Colloquy::Bot - Parse Colloquy Bot/Client Terminal Output
 #
 #   Copyright 2006 Nicola Worthington
@@ -29,7 +29,7 @@ use Carp qw(croak cluck confess carp);
 
 use vars qw($VERSION $DEBUG @EXPORT @EXPORT_OK %EXPORT_TAGS @ISA);
 
-$VERSION = '0.01' || sprintf('%d.%02d', q$Revision$ =~ /(\d+)/g);
+$VERSION = '0.01' || sprintf('%d.%02d', q$Revision: 457 $ =~ /(\d+)/g);
 
 @ISA = qw(Exporter);
 @EXPORT = qw();
@@ -175,7 +175,7 @@ L<Colloquy::Data>, L<Colloquy::Bot::Simple>, L<Chatbot::TalkerBot>
 
 =head1 VERSION
 
-$Id: Simple.pm 429 2006-05-01 21:10:56Z nicolaw $
+$Id$
 
 =head1 AUTHOR
 
