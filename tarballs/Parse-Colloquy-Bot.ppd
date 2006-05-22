@@ -1,9 +1,9 @@
-<SOFTPKG NAME="Parse-Colloquy-Bot" VERSION="0,01,0,0">
+<SOFTPKG NAME="Parse-Colloquy-Bot" VERSION="0,02,0,0">
     <TITLE>Parse-Colloquy-Bot</TITLE>
-    <ABSTRACT>Parse Colloquy Bot/Client Terminal Output</ABSTRACT>
+    <ABSTRACT>Parse Colloquy bot/client terminal output</ABSTRACT>
     <AUTHOR>Nicola Worthington &lt;nicolaw@cpan.org&gt;</AUTHOR>
     <IMPLEMENTATION>
         <DEPENDENCY NAME="Carp" VERSION="0,0,0,0" />
-        <CODEBASE HREF="PPM-Parse-Colloquy-Bot-0.01.tar.gz" />
+        <CODEBASE HREF="PPM-Parse-Colloquy-Bot-0.02.tar.gz" />
     </IMPLEMENTATION>
 </SOFTPKG>
