@@ -1,7 +1,7 @@
 ############################################################
 #
 #   $Id$
-#   Parse::Colloquy::Bot - Parse Colloquy Bot/Client Terminal Output
+#   Parse::Colloquy::Bot - Parse Colloquy bot/client terminal output
 #
 #   Copyright 2006 Nicola Worthington
 #
@@ -28,7 +28,7 @@ use Carp qw(croak cluck confess carp);
 
 use vars qw($VERSION $DEBUG @EXPORT @EXPORT_OK %EXPORT_TAGS @ISA);
 
-$VERSION = '0.01' || sprintf('%d.%02d', q$Revision: 457 $ =~ /(\d+)/g);
+$VERSION = '0.02' || sprintf('%d.%02d', q$Revision: 457 $ =~ /(\d+)/g);
 
 @ISA = qw(Exporter);
 @EXPORT = qw();
@@ -36,6 +36,11 @@ $VERSION = '0.01' || sprintf('%d.%02d', q$Revision: 457 $ =~ /(\d+)/g);
 %EXPORT_TAGS = (all => \@EXPORT_OK);
 
 $DEBUG = $ENV{DEBUG} ? 1 : 0;
+
+BEGIN {
+	# It would be nice to have high resolution times if possible
+	eval { require Time::HiRes; import Time::HiRes qw(time); };
+}
 
 sub parse_line {
 	my @out = ();
@@ -55,18 +60,21 @@ sub _parse_line {
 	s/[\n\r]//g;
 	s/^\s+|\s+$//g;
 
+	my $raw = $_;
 	$_ = "RAW $_" if m/^\+\+\+/;
 	return unless m/^([A-Z]+\S*)(?:\s+(.+))?$/;
+
 	my %args = (
-			raw     => $_,
-			msgtype => $1 || '',
-			text    => $2 || '',
-			args    => [ split(/\s+/,$_||'') ],
-			command => undef,
-			cmdargs => undef,
-			list    => undef,
-			person  => undef,
-			respond => undef,
+			"time"    => time(),
+			"raw"     => $raw,
+			"msgtype" => $1 || '',
+			"text"    => $2 || '',
+			"args"    => [ split(/\s+/,$_||'') ],
+			"command" => undef,
+			"cmdargs" => undef,
+			"list"    => undef,
+			"person"  => undef,
+			"respond" => undef,
 		);
 	local $_ = $args{text};
 
@@ -171,7 +179,7 @@ sub DUMP {
 
 =head1 NAME
 
-Parse::Colloquy::Bot - Parse Colloquy Bot/Client Terminal Output
+Parse::Colloquy::Bot - Parse Colloquy bot/client terminal output
 
 =head1 SYNOPSIS
 
@@ -225,6 +233,7 @@ Will be parsed in to the following structure:
                          'neech'
                        ],
           'respond' => undef,
+          'time' => 1148224087,
         };
 
 =head1 SEE ALSO
