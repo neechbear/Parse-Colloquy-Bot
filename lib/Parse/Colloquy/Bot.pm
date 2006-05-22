@@ -28,7 +28,7 @@ use Carp qw(croak cluck confess carp);
 
 use vars qw($VERSION $DEBUG @EXPORT @EXPORT_OK %EXPORT_TAGS @ISA);
 
-$VERSION = '0.02' || sprintf('%d.%02d', q$Revision: 457 $ =~ /(\d+)/g);
+$VERSION = '0.03' || sprintf('%d', q$Revision: 457 $ =~ /(\d+)/g);
 
 @ISA = qw(Exporter);
 @EXPORT = qw();
