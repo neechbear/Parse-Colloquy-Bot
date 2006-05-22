@@ -1,8 +1,11 @@
-chdir('t') if -d 't';
+# $Id: 10pod.t 459 2006-05-19 19:26:42Z nicolaw $
 
 use strict;
-use Test::More tests => 4;
-use Test::Deep;
+use Test::More;
+eval "use Test::Deep";
+if ($@) { plan skip_all => "Test::Deep required for testing parse_lin()"; }
+else { plan tests => 4; }
+
 use lib qw(./lib ../lib);
 use Parse::Colloquy::Bot qw(:all);
  
@@ -75,4 +78,6 @@ sub _data {
 
 	return @data;
 }
+
+1;
 
